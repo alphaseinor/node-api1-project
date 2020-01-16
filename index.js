@@ -83,3 +83,39 @@ server.post('/api/users', (req, res) => {
     res.status(400).json({errorMessage: "Please provide name and bio for the user."})
   }
 })
+
+server.delete('/api/users/:id', (req, res) => {
+  const {id} = req.params
+
+  db.remove(id)
+  .then(deleted => {
+    deleted ? res.status(204).end() : res.status(404).json({message: "The user with the specified ID does not exist."})
+  })
+  .catch(err => {
+    res.status(500).json({ errorMessage: "The user could not be removed" })
+  })
+})
+
+server.put('/api/users/:id', (req, res) => {
+  const {id} = req.params
+  const userChange = req.body
+
+  db.findById(id)
+  .then(exists => {
+    if (!exists){  
+    res.status(404).json({message: "The user with the specified ID does not exist."})}else if(userChange.name && userChange.bio){ 
+      db.update(id, userChange)
+      .then(user => {
+        res.status(200).json(user)
+      })
+      .catch(err => {
+        res.status(500).json({ errorMessage: "The user information could not be modified." })
+      }) 
+    }else{
+      res.status(400).json({errorMessage: "Please provide name and bio for the user."})
+    }
+  })
+  .catch(err => {
+    res.status(404).json({message: "The user with the specified ID does not exist."})
+  })
+})
