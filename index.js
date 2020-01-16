@@ -10,6 +10,7 @@ server.listen(4000, () => {
 })
 
 server.use(express.json())
+server.use(cors())
 
 server.get("/", (req, res)=>{
   res.send(`<p>This server has the following functions</p>
