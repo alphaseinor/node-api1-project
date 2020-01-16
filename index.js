@@ -39,3 +39,29 @@ server.get("/", (req, res)=>{
   Removes the user with the specified id and returns the deleted user.</p>
   `)
 })
+
+server.get("/api/users", (req, res) => {
+  db.find()
+  .then(users => {
+    res.status(200).json(users)
+  })
+  .catch(err => {
+    res.status(500).json({errorMessage: "The users information could not be retrieved."})
+  })
+})
+
+server.get("/api/users/:id", (req, res) => {
+  const {id} = req.params
+
+  db.findById(id)
+  .then(users => {
+    !users ? 
+    res.status(404)
+    .json({message: "The user with the specified ID does not exist."}) : 
+    res.status(200)
+    .json(users)
+  })
+  .catch(err => {
+    res.status(500).json({errorMessage: "The user information could not be retrieved."})
+  })
+})
