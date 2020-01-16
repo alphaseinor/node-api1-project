@@ -40,6 +40,7 @@ server.get("/", (req, res)=>{
   `)
 })
 
+//Find all users
 server.get("/api/users", (req, res) => {
   db.find()
   .then(users => {
@@ -50,6 +51,7 @@ server.get("/api/users", (req, res) => {
   })
 })
 
+//Find user by ID
 server.get("/api/users/:id", (req, res) => {
   const {id} = req.params
 
@@ -64,4 +66,20 @@ server.get("/api/users/:id", (req, res) => {
   .catch(err => {
     res.status(500).json({errorMessage: "The user information could not be retrieved."})
   })
+})
+
+//Add a new user
+server.post('/api/users', (req, res) => {
+  const user = req.body
+  if(user.name && user.bio){ 
+    db.insert(user)
+    .then(user => {
+      res.status(201).json(user)
+    })
+    .catch(err => {
+      res.status(500).json({ errorMessage: "There was an error while saving the user to the database" })
+    }) 
+  }else{
+    res.status(400).json({errorMessage: "Please provide name and bio for the user."})
+  }
 })
